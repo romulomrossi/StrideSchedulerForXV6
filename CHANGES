@@ -1,0 +1,4 @@
+Editions:
+
+-Added system call ps; 
+-Added system call cht, that changes the number of tickets to procces; 
