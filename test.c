@@ -7,9 +7,9 @@
 #define N 10
 
 unsigned long next=1;
-unsigned int lcg_rand()
+unsigned int lcg_rand(int b)
 { 
-    unsigned long a = ((unsigned long)next++ * 279470273UL) % 42949671UL;
+    unsigned long a = ((unsigned long)b * 279470273UL) % 42949671UL;
     return a < 0 ? -1*a : a;
 }
 
@@ -30,22 +30,20 @@ void new_fork(unsigned int tickets){
       return;
 
     counter++;
-    int pid = fork(-1);
+    int pid = fork(1);
     cht(pid, tickets);
     if(pid == 0){
-      new_fork(lcg_rand()%200);
+      new_fork(tickets+100);
     }
     if(pid > 0){
-        for(int i = 0; i < 10000; i++){
-          for(int j = 0; j < 1123456789; j++){
-             wait_(10000000);
+        for(int i = 0; i < 1012; i++){
+          for(int j = 0; j < 13829; j++){
              printf(1, "");
           }
         }
     }
-    wait_(lcg_rand());
-    wait();
     printf(1, "Returning Pid >>>> %d with %d tickets\n", pid, tickets);
+    wait();
     exit();
 }
 

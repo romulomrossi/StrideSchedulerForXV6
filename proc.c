@@ -550,6 +550,7 @@ cht(int pid, int ntickets)
     if(p->pid == pid)
     {
       p->tickets = ntickets;
+      p->stride = CONST_STRIDE/ntickets;
       break;
     }
   }
