@@ -178,6 +178,8 @@ fork(int tickets)
 
   np->state = RUNNABLE;
   np->tickets = tickets;
+  np->initial_stride = 0;
+  np->stride = CONST_STRIDE/tickets;
   release(&ptable.lock);
 
   return pid;
@@ -302,29 +304,35 @@ void
 scheduler(void)
 {
   struct proc *p;
-  int winner, sum;
+  struct proc *winner;
+  int lowest;
 
   for(;;){
     sti(); // Enable interrupts on this processor.
     acquire(&ptable.lock); 
-    sum = 0;
-    winner = random_number(ticks*87329823458)%(get_tickets_number()+1);
+    lowest = -1;
+    winner = ptable.proc;
     
     for(p = ptable.proc; p < &ptable.proc[NPROC]; p++){
       //skip if procces is not runnable
       if(p->state != RUNNABLE)
         continue;
       
-      sum += p->tickets; 
-      if(sum < winner)
-        continue;   
+      if(lowest == -1 || p->initial_stride < lowest){
+        lowest = p->initial_stride;
+        winner = p;
+      }
 
-      proc = p;
-      switchuvm(p);
-      p->state = RUNNING;
-      swtch(&cpu->scheduler, p->context);
-      proc = 0;
-    }
+      if(p->initial_stride == lowest)
+        winner = winner->pid < p->pid ? winner : p;
+
+    }  
+    proc = winner;
+    switchuvm(winner);
+    winner->initial_stride += winner->stride;
+    winner->state = RUNNING;
+    swtch(&cpu->scheduler, winner->context);
+    proc = 0;
     switchkvm();
     release(&ptable.lock);
   }

@@ -35,11 +35,12 @@ void new_fork(unsigned int tickets){
     if(pid == 0){
       new_fork(lcg_rand()%200);
     }
-
     if(pid > 0){
         for(int i = 0; i < 10000; i++){
-          for(int j = 0; j < 1123456789; j++)
-                 wait_(10000000);
+          for(int j = 0; j < 1123456789; j++){
+             wait_(10000000);
+             printf(1, "");
+          }
         }
     }
     wait_(lcg_rand());

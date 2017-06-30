@@ -12,3 +12,4 @@
 #define NBUF                 (MAXOPBLOCKS*3)  // size of disk block cache
 #define FSSIZE               1000  // size of file system in blocks
 #define DEFAULT_PROC_TICKETS 20 // default number of tickets to process
+#define CONST_STRIDE         10000
